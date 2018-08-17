@@ -1,14 +1,18 @@
 import * as UserInterfaceStateAssembler from './UserInterfaceStateAssembler';
 
+const initialState = {
+  linesOfCodeWritten: 0
+}
+
 class Game {
 
-  constructor(gameStateUpdatedCallback) {
-    this.gameStateUpdatedCallback = gameStateUpdatedCallback;
+  constructor(gameStateUpdatedCallback, saveGameCallback, loadGameRequestCallback) {
+    this.gameStateUpdatedCallback = gameStateUpdatedCallback; // TODO: rename to renderGameCallback
+    this.saveGameCallback = saveGameCallback;
+    this.loadGameRequestCallback = loadGameRequestCallback;
   }
 
-  state = {
-    linesOfCodeWritten: 0
-  }
+  state = {...initialState};
 
   static ElementType = {
     Button: 'button',
@@ -16,7 +20,18 @@ class Game {
   }
 
   start() {
+    this.loadGameRequestCallback();
     this.applyStateChange();
+
+  }
+
+  loadGameState(loadedState) {
+    this.clearState();
+    this.applyStateChange(loadedState);
+  }
+
+  clearState = () => {
+    this.state = {...initialState};
   }
 
   applyStateChange(change = {}) {
@@ -25,6 +40,7 @@ class Game {
       ...change
     };
     const gameStateObject = UserInterfaceStateAssembler.assemble(this.state);
+    this.saveGameCallback({...this.state});
     this.gameStateUpdatedCallback(gameStateObject);
   }
 
@@ -33,6 +49,7 @@ class Game {
       
       case 'WRITE_CODE_LINE':
         let {linesOfCodeWritten} = this.state;
+        console.log({linesOfCodeWritten})
         linesOfCodeWritten++;
         this.applyStateChange({linesOfCodeWritten});
         break;

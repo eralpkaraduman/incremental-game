@@ -26,7 +26,7 @@ export function assemble(gameState) {
     elements = [...elements,
       {
         type: Button,
-        title: 'Create an utility',
+        title: 'Create a utility',
         onClickAction: 'CREATE_UTILITY'
       }
     ];

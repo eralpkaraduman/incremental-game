@@ -5,20 +5,42 @@ import './Game.css';
 export default class ReactGameRenderer extends Component {
 
   state = {
-    gameState: {}
+    gameState: {} // TODO: rename to renderableInterfaceState
   }
 
   constructor() {
     super();
-    this.game = new Game(this.handleOnGameStateUpdated);
+    this.game = new Game(
+      this.handleOnRenderGameState,
+      this.handleOnSaveGameStateRequested,
+      this.handleOnLoadGameStateRequested
+    );
   }
 
   componentDidMount() {
     this.game.start();
   }
 
-  handleOnGameStateUpdated = (gameState) => {
+  handleOnRenderGameState = (gameState) => {
     this.setState(() => ({gameState}))
+  }
+
+  handleOnSaveGameStateRequested = (gameState) => {
+    const serializedGameState = JSON.stringify(gameState);
+    localStorage.setItem('GAME_STATE', serializedGameState);
+  }
+
+  handleOnLoadGameStateRequested = (gameState) => {
+    const serializedGameState = localStorage.getItem('GAME_STATE');
+    if (serializedGameState) {
+      try {
+        const deserializedGameState = JSON.parse(serializedGameState);
+        this.game.loadGameState(deserializedGameState);
+      }
+      catch(e) {
+        console.error('Failed to load game state: ' + e);
+      }
+    }
   }
 
   handleOnElementClicked = onClickAction => {
@@ -59,9 +81,11 @@ export default class ReactGameRenderer extends Component {
     const elements = gameState.elements || [];
     return (
       <div>
-        {elements.map((element, index) =>
-          <div key={index}>{this.renderElement(element)}</div>
-        )}
+        <div>
+          {elements.map((element, index) =>
+            <div key={index}>{this.renderElement(element)}</div>
+          )}
+        </div>
       </div>
     );
   }
