@@ -1,7 +1,8 @@
 import * as UserInterfaceStateAssembler from './UserInterfaceStateAssembler';
 
 const initialState = {
-  linesOfCodeWritten: 0
+  linesOfCodeWritten: 0,
+  projects: []
 }
 
 class Game {
@@ -52,6 +53,13 @@ class Game {
         console.log({linesOfCodeWritten})
         linesOfCodeWritten++;
         this.applyStateChange({linesOfCodeWritten});
+        break;
+
+      case 'START_NEW_PROJECT': // TODO: not implemented
+        // let {linesOfCodeWritten} = this.state;
+        // console.log({linesOfCodeWritten})
+        // linesOfCodeWritten++;
+        // this.applyStateChange({linesOfCodeWritten});
         break;
 
       default:

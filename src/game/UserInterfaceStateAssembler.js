@@ -2,7 +2,7 @@ import Game from './Game';
 
 export function assemble(gameState) {
   const {Button, TextStat} = Game.ElementType;
-  const {linesOfCodeWritten} = gameState;
+  const {linesOfCodeWritten, projects} = gameState;
   let elements = [];
 
   const writeCodeButton = {
@@ -11,7 +11,18 @@ export function assemble(gameState) {
     onClickAction: 'WRITE_CODE_LINE'
   }
 
-  elements = [...elements, writeCodeButton];
+  const startProjectButton = {
+    type: Button,
+    title: 'Start a new project',
+    onClickAction: 'START_NEW_PROJECT'
+  }
+
+  if (projects.length > 0) {
+    elements = [...elements, writeCodeButton];
+  }
+  else {
+    elements = [...elements, startProjectButton];
+  }
 
   if (linesOfCodeWritten > 0) {
     elements = [...elements,
